@@ -1,8 +1,8 @@
 services:
-  db:
+  postgresdb:
     image: mysql
     restart: on-failure
-    hostname: "todoappdb"
+#    hostname: "todoappdb"
     healthcheck:
       test: "exit 0"
     environment:
@@ -15,17 +15,17 @@ services:
     ports:
       - "3306:3306"
 
-  service:
+  todobackend:
     image: todo-app-backend
     depends_on:
-      db:
+      postgresdb:
         condition: service_healthy
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://todoappdb:3306/todo_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://postgresdb:3306/todo_db
 
-  ui:
-    image: todo-app-ui
-    ports:
-      - "5137:5137"
+#  ui:
+#    image: todo-app-ui
+#    ports:
+#      - "5137:5137"
