@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mysql
+    restart: on-failure
+    hostname: "todoappdb"
+    healthcheck:
+      test: "exit 0"
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: todo_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: my-password
+    command:
+      - --skip-log-bin
+    ports:
+      - "3306:3306"
+
+  service:
+    image: todo-app-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://todoappdb:3306/todo_db
+
+  ui:
+    image: todo-app-ui
+    ports:
+      - "5137:5137"
